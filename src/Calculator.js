@@ -1,4 +1,7 @@
 import React, {Component} from "react";
+import Screen from './Screen.js';
+import Button from './Button';
+import './App.css';
 
 class Calculator extends Component{
   constructor(props)
@@ -6,90 +9,104 @@ class Calculator extends Component{
       super(props);
       this.state=
       {
-          exp:""
-      
-      
+          currentNumber: "0",
+          operatorFlag:false,
+          decimalFlag:false
+
       }
   }
 
-  handleClick(btnVal)
+  handleClick = (buttonName) => 
   {
-    console.log(btnVal);
-    var curr = this.state.exp;
-   
-    if(btnVal==="=")
-    {
-      this.setState
-      ({
-          exp:String(eval(curr))
-      });
-    
+    let currentNumber = this.state.currentNumber
+    let operatorFlag = this.state.operatorFlag
+    switch(true){
+        case buttonName === "0" ||
+             buttonName === "1" ||
+             buttonName === "2" ||
+             buttonName === "3" ||
+             buttonName === "4" ||
+             buttonName === "5" ||
+             buttonName === "6" ||
+             buttonName === "7" ||
+             buttonName === "8" ||
+             buttonName === "9" :
+        if(this.state.currentNumber!=="0")
+        {
+          currentNumber += buttonName
+          operatorFlag = false
+        }
+        else
+        {
+          currentNumber = buttonName
+        }
+        break
+        case buttonName === "+" ||
+             buttonName === "-" ||
+             buttonName === "*" ||
+             buttonName === "/" :
+        if(!this.state.operatorFlag)
+        {
+          currentNumber += buttonName
+          operatorFlag = true
+          this.setState({decimalFlag:false})
+        }
+        else
+        {
+          const newNumber = currentNumber.slice(0,currentNumber.length-1)
+          currentNumber = newNumber
+          currentNumber += buttonName
+        }
+        break
+        case buttonName === "C":
+          currentNumber = "0"
+          operatorFlag = false
+          this.setState({decimalFlag:false})
+        break
+        case buttonName === "=":
+          currentNumber = eval(currentNumber)
+          operatorFlag = false
+          this.setState({decimalFlag:true})
+        break
+        case buttonName === ".":
+          if(!this.state.decimalFlag){
+            currentNumber += "."
+            this.setState({decimalFlag:true})
+          }
     }
-
-    else if(btnVal==="C")
-    {
-      this.setState
-      ({
-        exp:""
-      });
-    }
-   
-    else
-    {
-      this.setState
-      ({
-      exp: curr + btnVal
-      });
-    }
+    this.setState({operatorFlag})
+    this.setState({currentNumber})
+  } 
   
-  }
+
 
   render(){
-        return(
-        <div>
-        <h3>Calculator</h3>
-        <p>{this.state.exp}</p>
-        
-        <button onClick ={ ()=>{this.handleClick(7);} } > 7 </button>     
-        <button onClick ={ ()=>{this.handleClick(8);} } > 8 </button> 
-        <button onClick ={ ()=>{this.handleClick(9);} } > 9 </button> 
-        <button onClick={() => {this.handleClick("/"); }} > / </button> 
-        
-        <br/>
-        
-        <button onClick={() => {this.handleClick(4); }} > 4 </button>
-        <button onClick={() => {this.handleClick(5); }} > 5 </button>
-        <button onClick={() => {this.handleClick(6); }} > 6 </button>
-        <button onClick={() => {this.handleClick("*"); }} > * </button>
-        
-        <br />
-        
-        <button onClick={() => {this.handleClick(1); }} > 1 </button>
-        <button onClick={() => {this.handleClick(2); }} > 2 </button>
-        <button onClick={() => {this.handleClick(3); }} > 3 </button>
-        <button onClick={() => {this.handleClick("-"); }} > - </button>
-        
-        <br />
-
-        <button onClick={() => {this.handleClick("."); }} > . </button>
-        <button onClick={() => {this.handleClick(0); }} > 0 </button>
-        <button onClick={() => {this.handleClick("="); }} > = </button>
-        <button onClick={() => {this.handleClick("+"); }} > + </button>
-        
-        <br/>
-        
-        <button onClick={() => {this.handleClick("C"); }} > C </button>
-        
+    return(
+     <div className="container ">
+        <h1 className="green-text card-panel #212121 grey darken-4">Calculator</h1>
+        <div id="calcGrid">
+        <Screen  id="display" currentNumber={this.state.currentNumber} />
+          
+        <Button id="zero" name="0" handleClick={this.handleClick} />
+        <Button id="one" name="1" handleClick={this.handleClick} />
+        <Button id="two" name="2" handleClick={this.handleClick} />
+        <Button id="three" name="3" handleClick={this.handleClick} />
+        <Button id="four" name="4" handleClick={this.handleClick} />
+        <Button id="five" name="5" handleClick={this.handleClick} />
+        <Button id="six" name="6" handleClick={this.handleClick} />
+        <Button id="seven" name="7" handleClick={this.handleClick} />
+        <Button id="eight" name="8" handleClick={this.handleClick} />
+        <Button id="nine" name="9" handleClick={this.handleClick} />
+        <Button id="clear" name="C" handleClick={this.handleClick} />
+        <Button id="equals" name="=" handleClick={this.handleClick} />
+        <Button id="decimal" name="." handleClick={this.handleClick} />
+        <Button id="add" name="+" handleClick={this.handleClick} />
+        <Button id="subtract" name="-" handleClick={this.handleClick} />
+        <Button id="multiply" name="*" handleClick={this.handleClick} />
+        <Button id="divide" name="/" handleClick={this.handleClick} />
         </div>
-
-
-
-
+     </div>
     );
-
-
-
-
   }
 }
 
